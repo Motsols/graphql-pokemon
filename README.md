@@ -3,68 +3,114 @@
 </p>
 
 <h1 align="center">GraphQL Pokémon</h1>
-<p align="center">
-  Get information of a Pokémon with GraphQL!<br />
-  <a href="https://graphql-pokemon.now.sh/">See the GraphiQL interface</a>
-</p>
 
-## How to use
+**5 minute setup** then start learning!
 
-Simply get Pokémon's information through queries in GraphQL, example:
+Get a lot more insight into how a GraphQL server works in just one hour with this very simple and intuitive example.
 
+
+## Try it out!
+1. `npm install -g yarn@berry`
+2. `yarn` (run command tool as administrator on windows)
+3. `yarn run watch`  
+4. [Install GraphQL Playground (recommended) or use the web demo](https://github.com/prisma-labs/graphql-playground)
+5. Enter `http://localhost:5000/` in Playground
+6. Paste this query and run it
 ```graphql
-query {
-  pokemon(name: "Pikachu") {
+{
+  pokemons(first: 3) {
     id
     number
-    name
-    attacks {
-      special {
-        name
-        type
-        damage
-      }
+    weight {
+      minimum
+      maximum
     }
+  }
+}
+```   
+
+## Short intro to GraphQL
+What you just did was to use a Query (idempotent) which was specified in the GraphQL Schema and as a Type.  
+In the playground, click on Schema- and Docs-buttons on the far right to see the different types in this project. You can also explore what's available with `ctrl+space`.  
+A schema is built up on Types. The query returns a result Type (class) with properties that are of Types that can be built in (String, Int) or custom (Pokemon, Attack).  
+As you type the editor will suggest the fields you can use, as also shown in the Docs panel to the right.  
+
+In code you will find the schema in the folder `Schema` and the unerlying Types in the folder `Type`.  
+To test actually using it, carry on with the tasks below.
+
+## Tasks
+### 1. Add name
+Seeing id and number is nice, but I can't remember the name so let's put that in there as well.  
+Go to `/src/type/PokemonType.js` and add Name as a field in the PokemonType. Hint: the type is the built-in `GraphQLString`. The web page will very quickly update with the added field.  
+
+When done add `name` to the query
+```graphql
+{
+  pokemons(first: 3) {
+    id
+    name
+    number
+    weight {
+      minimum
+      maximum
+    }
+  }
+}
+```
+### 2. Add resistances and maxCP
+This is still very basic information. Add some more information about resistances (similar to types) and MaxCP (similar to maxHP).  
+
+Now ask for this in the query as well.  
+```graphql
+{
+  pokemons(first: 3) {
+    id
+    name
+    number
+    weight {
+      minimum
+      maximum
+    }
+    resistances
+    maxCP
+  }
+}
+```
+
+### 3. Add recursive pokémons  
+Sometimes the data we request needs to be resolved from the data source again. When we ask for the first 3 pokemons, nothing special happends. We just display the properties. If we also add information about the evolutions (as PokemonType) we do something more advanced which normally would mean using a Data Loader.  
+
+Any time we open new brackets we potentially need to fetch more data from the server. In our case, a Pokemon knows how to fetch it's own data, and when a pokemon has a list of evolutions (Pokemons) it will need to ge those as well but that is done in a batch to avoid n+1 issues.  
+
+For our simple demo the resolving Data Loader is nothing more than calling getPokemonByEvolutions(obj.evolutions) to return the evolutions. With very little work we have now enabled recursive queries for pokemon.  
+
+Try it out with Bulbasaur!
+```graphql
+{
+  pokemons(first: 1) {
+    id
+    name
+    number
     evolutions {
       id
-      number
       name
-      weight {
-        minimum
-        maximum
-      }
-      attacks {
-        fast {
-          name
-          type
-          damage
-        }
+      number
+      evolutions {
+        id
+        name
+        number
       }
     }
   }
 }
 ```
 
-> Try this query [here](https://graphql-pokemon.now.sh/?query=%7B%0A%20%20pokemon(name%3A%20%22Pikachu%22)%20%7B%0A%20%20%20%20id%0A%20%20%20%20number%0A%20%20%20%20name%0A%20%20%20%20attacks%20%7B%0A%20%20%20%20%20%20special%20%7B%0A%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%20%20type%0A%20%20%20%20%20%20%20%20damage%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%20%20evolutions%20%7B%0A%20%20%20%20%20%20id%0A%20%20%20%20%20%20number%0A%20%20%20%20%20%20name%0A%20%20%20%20%20%20weight%20%7B%0A%20%20%20%20%20%20%20%20minimum%0A%20%20%20%20%20%20%20%20maximum%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20attacks%20%7B%0A%20%20%20%20%20%20%20%20fast%20%7B%0A%20%20%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%20%20%20%20type%0A%20%20%20%20%20%20%20%20%20%20damage%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D)!
+### 4. Experiment more!
+This is a quick look at how a GraphQL server works.
 
-> Check out the [React Relay Pokémon Project](https://github.com/lucasbento/react-relay-pokemon) and [Live Demo](https://react-relay-pokemon.now.sh/) too!
+There is more data available in `/src/pokemons/pokemons.js` which can be exposed or make up some more information that uses a data loader.  
 
-## Running
-
-### Production
-
-```sh
-yarn
-yarn run build
-yarn start
-```
-
-### Development
-
-```sh
-yarn
-yarn run watch # Using nodemon for auto-reloading
-```
+You can also try making a Mutation (unlike Query this edits data). Now you can make Pikachu into a water Pokémon!
 
 ## Disclaimer
 
