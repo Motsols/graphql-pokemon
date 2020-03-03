@@ -4,7 +4,7 @@
 
 <h1 align="center">GraphQL Pokémon</h1>
 
-**5 minute setup** then start learning!
+**3 minute setup** then start learning!
 
 Get a lot more insight into how a GraphQL server works in just one hour with this very simple and intuitive example.
 
