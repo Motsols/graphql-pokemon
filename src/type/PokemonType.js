@@ -35,11 +35,6 @@ const PokemonType = new GraphQLObjectType({
       description: 'The type(s) of this Pokémon',
       resolve: obj => obj.types,
     },
-    resistances: {
-      type: new GraphQLList(GraphQLString),
-      description: 'The type(s) of Pokémons that this Pokémon is resistant to',
-      resolve: obj => obj.resistant,
-    },
     attacks: {
       type: PokemonAttackType,
       description: 'The attacks of this Pokémon',
