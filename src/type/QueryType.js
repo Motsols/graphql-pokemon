@@ -26,20 +26,20 @@ const QueryType = new GraphQLObjectType({
       type: QueryType,
       resolve: (...args) => args,
     },
-    pokemons: {
-      type: new GraphQLList(PokemonType),
+    pokemons: { // This is the query for pokemons(first: 3)
+      type: new GraphQLList(PokemonType), // Returns a list of Pokémon, of the custom type PokemonType
       args: {
         first: {
-          type: new GraphQLNonNull(GraphQLInt),
+          type: new GraphQLNonNull(GraphQLInt), // GraphQLNotNull makes it required
         },
       },
       resolve: async (obj, args) => await getPokemons(args),
     },
-    pokemon: {
-      type: PokemonType,
-      args: {
+    pokemon: { // Query for pokemon(id: 1) and pokemon(name: Charmander)
+      type: PokemonType, // Returns A Pokemon
+      args: { // This has two possible inputs, and at least one of them must be set
         id: {
-          type: GraphQLString,
+          type: GraphQLString, // This is one of several built-in basic types
         },
         name: {
           type: GraphQLString,
